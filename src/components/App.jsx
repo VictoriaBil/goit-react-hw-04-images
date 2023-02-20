@@ -84,6 +84,7 @@ export function App() {
     <div className={css.Container}>
       <div className={css.App}>
         <Searchbar onSubmit={searchResult} />
+        {error && <p>Something went wrong. Please refresh the page</p>}
         {isLoading && <Loader />}
         {showModal && <Modal imgUrl={largeImageUrl} onClose={toggleModal} />}
         <ImageGallery pictures={pictures} onClick={getLargeImgUrl} />
