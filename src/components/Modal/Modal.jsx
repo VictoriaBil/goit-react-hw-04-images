@@ -9,21 +9,18 @@ export function Modal({ onClose, imgUrl }) {
         onClose();
       }
     };
-    if (imgUrl) {
-      window.addEventListener('keydown', handleKeyDown);
-    }
+
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [imgUrl, onClose]);
-
+  }, [onClose]);
   function handleBackdropClick(e) {
     if (e.currentTarget === e.target) {
       onClose();
     }
   }
-
   return (
     <div className={css.overlay} onClick={handleBackdropClick}>
       <div className={css.modal}>
@@ -32,7 +29,6 @@ export function Modal({ onClose, imgUrl }) {
     </div>
   );
 }
-
 Modal.proptTypes = {
   onClose: PropTypes.func.isRequired,
   imgUrl: PropTypes.string.isRequired,

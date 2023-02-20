@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Searchbar } from './Searchbar/Searchbar';
 import { fetchPictures } from '../API/Api';
 import { ImageGallery } from './ImageGallery/ImageGallery';
@@ -32,7 +34,10 @@ export function App() {
 
   const searchResult = value => {
     if (value === '') {
-      alert('Please write something');
+      toast.warning('Please write something', {
+        position: 'top-center',
+        autoClose: 2000,
+      });
     } else {
       setPage(1);
       setQuery(value);
@@ -49,8 +54,7 @@ export function App() {
       setIsLoading(true);
 
       try {
-        setPictures([]);
-        const data = await fetchPictures(query, page, totalImages);
+        const data = await fetchPictures(query, page);
 
         if (data.hits.length) {
           setPictures(prevPictures => [...prevPictures, ...data.hits]);
@@ -58,7 +62,10 @@ export function App() {
           setIsLoading(false);
         } else {
           setError(
-            "Sorry we can't find anything for your request. Please enter another request"
+            toast.error(
+              "Sorry we can't find anything for your request. Please enter another request",
+              { position: 'top-center', autoClose: 2000 }
+            )
           );
         }
       } catch (error) {
@@ -69,7 +76,7 @@ export function App() {
     }
 
     getImages();
-  }, [query, page, totalImages]);
+  }, [query, page]);
 
   const totalPage = pictures.length / totalImages;
 
@@ -77,11 +84,11 @@ export function App() {
     <div className={css.Container}>
       <div className={css.App}>
         <Searchbar onSubmit={searchResult} />
-        {error && <p>Something went wrong. Please refresh the page</p>}
         {isLoading && <Loader />}
         {showModal && <Modal imgUrl={largeImageUrl} onClose={toggleModal} />}
         <ImageGallery pictures={pictures} onClick={getLargeImgUrl} />
-        {totalPage < 1 && <Button onClick={handleLoadMore} />}
+        {totalPage < 1 && !isLoading && <Button onClick={handleLoadMore} />}
+        <ToastContainer />
       </div>
     </div>
   );
